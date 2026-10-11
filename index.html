@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PWA Input IGD - Sistem RS</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 15px; }
+    .card { background: #ffffff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 500px; margin: 0 auto; }
+    h2 { color: #1a73e8; margin-top: 0; text-align: center; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+    input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    button { width: 100%; background-color: #1a73e8; color: white; border: none; padding: 12px; font-size: 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    button:hover { background-color: #1557b0; }
+    .status { text-align: center; margin-top: 15px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Form Register IGD</h2>
+  <form id="formIGD">
+    <div class="form-group">
+      <label>No. Rekam Medis (RM)</label>
+      <input type="text" id="no_rm" required placeholder="Contoh: RM-123456">
+    </div>
+
+    <div class="form-group">
+      <label>Nama Pasien</label>
+      <input type="text" id="nama_pasien" required placeholder="Nama lengkap pasien">
+    </div>
+
+    <div class="form-group">
+      <label>Umur</label>
+      <input type="text" id="umur" placeholder="Contoh: 35 th / 6 bln">
+    </div>
+
+    <div class="form-group">
+      <label>Jenis Kelamin</label>
+      <select id="jenis_kelamin">
+        <option value="Laki-laki">Laki-laki</option>
+        <option value="Perempuan">Perempuan</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Kategori Pasien</label>
+      <select id="kategori_pasien">
+        <option value="BPJS">BPJS</option>
+        <option value="Umum">Umum</option>
+        <option value="Asuransi Swasta">Asuransi Swasta</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Level Triage</label>
+      <select id="level_triage">
+        <option value="Level 1 (Resusitasi - Merah)">Level 1 (Resusitasi - Merah)</option>
+        <option value="Level 2 (Emergensi - Merah)">Level 2 (Emergensi - Merah)</option>
+        <option value="Level 3 (Urgensi - Kuning)">Level 3 (Urgensi - Kuning)</option>
+        <option value="Level 4 (Non Urgensi - Hijau)">Level 4 (Non Urgensi - Hijau)</option>
+        <option value="Level 5 (False Emergency - Putih)">Level 5 (False Emergency - Putih)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Keluhan Utama</label>
+      <textarea id="keluhan_utama" rows="3" placeholder="Deskripsi singkat keluhan pasien..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Tindak Lanjut</label>
+      <select id="tindak_lanjut">
+        <option value="Rawat Inap">Rawat Inap</option>
+        <option value="Rawat Jalan / Pulang">Rawat Jalan / Pulang</option>
+        <option value="Rujuk">Rujuk</option>
+        <option value="Meninggal Dunia">Meninggal Dunia</option>
+        <option value="Ditolak / APS">Ditolak / APS</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Dokter Jaga</label>
+      <input type="text" id="dokter_jaga" placeholder="Nama Dokter Jaga">
+    </div>
+
+    <div class="form-group">
+      <label>Perawat Jaga (Penanggung Jawab)</label>
+      <input type="text" id="perawat_jaga" placeholder="Nama Perawat Tindakan">
+    </div>
+
+    <div class="form-group">
+      <label>Petugas Input</label>
+      <input type="text" id="petugas_input" placeholder="Nama Staf Admisi / Input">
+    </div>
+
+    <button type="submit" id="btnSubmit">KIRIM DATA PASIEN</button>
+  </form>
+
+  <div id="status" class="status"></div>
+</div>
+
+<script>
+  // GANTI TEKS DI BAWAH INI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzXMNfmxAWoropizKIoLsnu0vXWJBv-IRAcA9kbMUAGFyzXsgGMP_biTeuHUoPjlLfZ/exec";
+
+  document.getElementById("formIGD").addEventListener("submit", function(e) {
+    e.preventDefault();
+    
+    const btn = document.getElementById("btnSubmit");
+    const statusDiv = document.getElementById("status");
+    
+    btn.disabled = true;
+    btn.innerText = "Mengirim Data...";
+    statusDiv.style.color = "#333";
+    statusDiv.innerText = "Proses menyimpan...";
+
+    const payload = {
+      no_rm: document.getElementById("no_rm").value,
+      nama_pasien: document.getElementById("nama_pasien").value,
+      umur: document.getElementById("umur").value,
+      jenis_kelamin: document.getElementById("jenis_kelamin").value,
+      kategori_pasien: document.getElementById("kategori_pasien").value,
+      level_triage: document.getElementById("level_triage").value,
+      keluhan_utama: document.getElementById("keluhan_utama").value,
+      tindak_lanjut: document.getElementById("tindak_lanjut").value,
+      dokter_jaga: document.getElementById("dokter_jaga").value,
+      perawat_jaga: document.getElementById("perawat_jaga").value,
+      petugas_input: document.getElementById("petugas_input").value
+    };
+
+    fetch(WEB_APP_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    })
+    .then(() => {
+      statusDiv.style.color = "green";
+      statusDiv.innerText = "✅ Data Pasien Berhasil Disimpan!";
+      document.getElementById("formIGD").reset();
+      btn.disabled = false;
+      btn.innerText = "KIRIM DATA PASIEN";
+    })
+    .catch(err => {
+      statusDiv.style.color = "red";
+      statusDiv.innerText = "❌ Gagal Mengirim Data: " + err;
+      btn.disabled = false;
+      btn.innerText = "KIRIM DATA PASIEN";
+    });
+  });
+</script>
+
+</body>
+</html>
